@@ -19,7 +19,8 @@ class _EditHewanPageState extends State<EditHewanPage> {
   late final TextEditingController _jenisController;
   late final TextEditingController _tanggalController;
   late final TextEditingController _hargaController;
-  late final TextEditingController _statusController;
+  late String _statusSelected;
+  final List<String> statusOptions = ['tersedia'];
 
   @override
   void initState() {
@@ -30,7 +31,7 @@ class _EditHewanPageState extends State<EditHewanPage> {
     _hargaController = TextEditingController(
       text: widget.hewan.harga.toString(),
     );
-    _statusController = TextEditingController(text: widget.hewan.status);
+    _statusSelected = widget.hewan.status;
   }
 
   @override
@@ -39,7 +40,6 @@ class _EditHewanPageState extends State<EditHewanPage> {
     _jenisController.dispose();
     _tanggalController.dispose();
     _hargaController.dispose();
-    _statusController.dispose();
     super.dispose();
   }
 
@@ -48,16 +48,17 @@ class _EditHewanPageState extends State<EditHewanPage> {
       final data = {
         'nama': _namaController.text.trim(),
         'jenis': _jenisController.text.trim(),
-        'tanggalLahir': _tanggalController.text.trim(),
+        'tanggal_lahir': _tanggalController.text.trim(),
         'harga': int.tryParse(_hargaController.text.trim()) ?? 0,
-        'status': _statusController.text.trim(),
+        'status': _statusSelected,
       };
       context.read<HewanBloc>().add(UpdateHewan(widget.hewan.id, data));
     }
   }
 
-  Widget build (BuildContext context) {
-    return BlocListener<HewanBloc, HewanState> (
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<HewanBloc, HewanState>(
       listener: (context, state) {
         if (state is HewanCreatedSuccess) {
           Navigator.pop(context);
@@ -71,11 +72,11 @@ class _EditHewanPageState extends State<EditHewanPage> {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           title: const Text(
-            'Edit Hewan',
+            '✏️ Edit Data Hewan',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+          backgroundColor: Color(0xFF2E7D32),
+          elevation: 2,
           iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: Container(
@@ -83,7 +84,7 @@ class _EditHewanPageState extends State<EditHewanPage> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF1A237E), Color(0xFFAD1457)],
+              colors: [Color(0xFF2E7D32), Color(0xFF558B2F)],
             ),
           ),
           child: SafeArea(
@@ -110,7 +111,7 @@ class _EditHewanPageState extends State<EditHewanPage> {
                       isNumber: true,
                     ),
                     const SizedBox(height: 12),
-                    _buildField(_statusController, 'Status', Icons.info_outline),
+                    _buildStatusDropdown(),
                     const SizedBox(height: 24),
                     BlocBuilder<HewanBloc, HewanState>(
                       builder: (context, state) {
@@ -124,18 +125,16 @@ class _EditHewanPageState extends State<EditHewanPage> {
                           child: ElevatedButton(
                             onPressed: _submit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white.withOpacity(0.2),
+                              backgroundColor: Color(0xFF8D6E63),
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                                side: BorderSide(
-                                  color: Colors.white.withOpacity(0.4),
-                                ),
                               ),
+                              elevation: 4,
                             ),
                             child: const Text(
-                              'Perbarui',
+                              'Simpan Perubahan',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -193,6 +192,45 @@ class _EditHewanPageState extends State<EditHewanPage> {
         }
         return null;
       },
+    );
+  }
+
+  Widget _buildStatusDropdown() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Color(0xFF8D6E63).withOpacity(0.5), width: 1.5),
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withOpacity(0.08),
+      ),
+      child: DropdownButton<String>(
+        isExpanded: true,
+        value: _statusSelected,
+        dropdownColor: Color(0xFF2E7D32),
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        underline: Container(),
+        icon: const Icon(Icons.expand_more, color: Colors.white70),
+        items: statusOptions.map((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Color(0xFF4CAF50).withOpacity(0.4),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(value),
+            ),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          if (newValue != null) {
+            setState(() {
+              _statusSelected = newValue;
+            });
+          }
+        },
+      ),
     );
   }
 }
