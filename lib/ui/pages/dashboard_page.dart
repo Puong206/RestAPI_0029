@@ -24,11 +24,11 @@ class DashboardPage extends StatelessWidget {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           title: const Text(
-            "Koleksi Ternak",
+            "🌾 Koleksi Ternak",
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+          backgroundColor: Color(0xFF2E7D32),
+          elevation: 2,
           actions: [
             IconButton(
               onPressed: () => context.read<AuthBloc>().add(LogoutRequested()),
@@ -44,7 +44,7 @@ class DashboardPage extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF1A237E), Color(0xFFAD1457)],
+                  colors: [Color(0xFF2E7D32), Color(0xFF558B2F)],
                 ),
               ),
             ),
@@ -123,17 +123,15 @@ class DashboardPage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (innerContext) => BlocProvider.value(
-                    value: context
-                        .read<
-                            HewanBloc
-                        >(),
+                    value: context.read<HewanBloc>(),
                     child: const AddHewanPage(),
                   ),
                 ),
               );
             },
-            backgroundColor: Colors.white.withOpacity(0.2),
-            child: const Icon(Icons.add, color: Colors.white),
+            backgroundColor: Color(0xFF8D6E63),
+            elevation: 4,
+            child: const Icon(Icons.add, color: Colors.white, size: 28),
           ),
         ),
       ),
@@ -141,50 +139,185 @@ class DashboardPage extends StatelessWidget {
   }
 
   Widget _buildGlassCard(BuildContext context, dynamic hewan) {
+    final animalIcon = _getAnimalIcon(hewan.jenis);
+    final priceText = "Rp ${_formatPrice(hewan.harga)}";
+    
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
           child: Container(
-            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withOpacity(0.2)),
+              color: Color(0xFFFFA726).withOpacity(0.08),
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Color(0xFF8D6E63).withOpacity(0.3),
+                width: 1.5,
+              ),
             ),
-            child: ListTile(
-              onTap: () {
-                final bloc = context.read<HewanBloc>();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (innerContext) => BlocProvider.value(
-                      value: bloc,
-                      child: EditHewanPage(hewan: hewan),
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Color(0xFF8D6E63).withOpacity(0.3),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          animalIcon,
+                          style: const TextStyle(fontSize: 28),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              hewan.nama,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              hewan.jenis,
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 13,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete_outline, color: Color(0xFFFFA726)),
+                        onPressed: () => _showDeleteDialog(context, hewan),
+                        constraints: const BoxConstraints(minWidth: 30, minHeight: 30),
+                        padding: EdgeInsets.zero,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Tanggal Lahir",
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.6),
+                                fontSize: 11,
+                              ),
+                            ),
+                            Text(
+                              hewan.tanggalLahir,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Status",
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.6),
+                                fontSize: 11,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Color(0xFF4CAF50).withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Text(
+                                hewan.status,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF8D6E63).withOpacity(0.4),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          priceText,
+                          style: const TextStyle(
+                            color: Color(0xFFFFA726),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            final bloc = context.read<HewanBloc>();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (innerContext) => BlocProvider.value(
+                                  value: bloc,
+                                  child: EditHewanPage(hewan: hewan),
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Color(0xFF4CAF50),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Text(
+                              "Edit",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                );
-              },
-              leading: CircleAvatar(
-                backgroundColor: Colors.white.withOpacity(0.2),
-                child: const Icon(Icons.pets, color: Colors.white),
-              ),
-              title: Text(
-                hewan.nama,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(
-                "${hewan.jenis} • ${hewan.status}",
-                style: const TextStyle(color: Colors.white70),
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
-                onPressed: () => _showDeleteDialog(context, hewan),
+                ],
               ),
             ),
           ),
@@ -193,20 +326,41 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
+  String _getAnimalIcon(String jenis) {
+    final jenisLower = jenis.toLowerCase();
+    if (jenisLower.contains('sapi') || jenisLower.contains('cow')) return '🐄';
+    if (jenisLower.contains('kambing') || jenisLower.contains('goat')) return '🐐';
+    if (jenisLower.contains('domba') || jenisLower.contains('sheep')) return '🐑';
+    if (jenisLower.contains('babi') || jenisLower.contains('pig')) return '🐷';
+    if (jenisLower.contains('ayam') || jenisLower.contains('chicken')) return '🐔';
+    if (jenisLower.contains('kuda') || jenisLower.contains('horse')) return '🐴';
+    if (jenisLower.contains('angsa') || jenisLower.contains('duck')) return '🦆';
+    return '🐾';
+  }
+
+  String _formatPrice(int price) {
+    if (price >= 1000000) {
+      return '${(price / 1000000).toStringAsFixed(1)}JT';
+    } else if (price >= 1000) {
+      return '${(price / 1000).toStringAsFixed(0)}K';
+    }
+    return price.toString();
+  }
+
   void _showDeleteDialog(BuildContext context, dynamic hewan) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        backgroundColor: Colors.indigo.shade900,
-        title: const Text("Hapus Data?", style: TextStyle(color: Colors.white)),
+        backgroundColor: Color(0xFF2E7D32),
+        title: const Text("Hapus Data?", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         content: Text(
-          "Yakin ingin menghapus ${hewan.nama}?",
+          "Yakin ingin menghapus '${hewan.nama}'?",
           style: const TextStyle(color: Colors.white70),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: const Text("Batal"),
+            child: const Text("Batal", style: TextStyle(color: Color(0xFFFFA726))),
           ),
           TextButton(
             onPressed: () {
@@ -215,7 +369,7 @@ class DashboardPage extends StatelessWidget {
             },
             child: const Text(
               "Hapus",
-              style: TextStyle(color: Colors.redAccent),
+              style: TextStyle(color: Colors.redAccent, fontWeight: FontWeight.bold),
             ),
           ),
         ],
