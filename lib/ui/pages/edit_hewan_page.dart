@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restapi_0029/logic/bloc/hewan/hewan_bloc.dart';
 
 class EditHewanPage extends StatefulWidget {
   final HewanModel hewan;
@@ -36,5 +37,18 @@ class _EditHewanPageState extends State<EditHewanPage> {
     _hargaController.dispose();
     _statusController.dispose();
     super.dispose();
+  }
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      final data = {
+        'nama': _namaController.text.trim(),
+        'jenis': _jenisController.text.trim(),
+        'tanggalLahir': _tanggalController.text.trim(),
+        'harga': int.tryParse(_hargaController.text.trim()) ?? 0,
+        'status': _statusController.text.trim(),
+      };
+      context.read<HewanBloc>().add(UpdateHewan(widget.hewan.id, data));
+    }
   }
 }
