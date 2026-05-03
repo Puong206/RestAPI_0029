@@ -37,19 +37,19 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocConsumer<AuthBloc, AuthState>(
-        listener: (context, state) => {
+        listener: (context, state) {
           if (state is Authenticated) {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const DashboardPage()),
-            )
+            );
           } else if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.message),
                 backgroundColor: Colors.red,
               ),
-            )
+            );
           }
         },
         builder: (context, state) {
@@ -58,181 +58,237 @@ class _LoginPageState extends State<LoginPage> {
             height: double.infinity,
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xFF1A237E), Color(0xFFAD1457)],
+                colors: [Color(0xFF2E7D32), Color(0xFF558B2F)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
             ),
             child: Stack(
               children: [
+                // Decorative circles - farm theme
                 Positioned(
-                  top: 100,
-                  left: -50,
+                  top: 80,
+                  right: -60,
                   child: Container(
-                    width: 200,
-                    height: 200,
+                    width: 250,
+                    height: 250,
                     decoration: BoxDecoration(
-                      color: Colors.blueAccent.withOpacity(0.3),
+                      color: const Color(0xFFFFA726).withOpacity(0.15),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 100,
+                  left: -80,
+                  child: Container(
+                    width: 300,
+                    height: 300,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF8D6E63).withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
                   ),
                 ),
                 Center(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(25),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-                        child: Container(
-                          padding: const EdgeInsets.all(30),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        // Farm icon/logo
+                        Container(
+                          padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(25),
+                            color: Colors.white.withOpacity(0.15),
+                            shape: BoxShape.circle,
                             border: Border.all(
-                              color: Colors.white.withOpacity(0.2),
-                              width: 1.5,
+                              color: Colors.white.withOpacity(0.3),
+                              width: 2,
                             ),
                           ),
-                          child: Form(
-                            key: _formKey,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Text(
-                                  "Selamat Datang",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                          child: const Icon(
+                            Icons.agriculture,
+                            size: 50,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          "Koleksi Ternak",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Kelola hewan ternak Anda dengan mudah",
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.8),
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                              padding: const EdgeInsets.all(28),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.12),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.25),
+                                  width: 1.5,
                                 ),
-                                const SizedBox(height: 40),
-
-                                _buildGlassTextField(
-                                  controller: _emailController,
-                                  hint: "Email",
-                                  icon: Icons.email_outlined,
-                                  keyboardType: TextInputType.emailAddress,
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Email tidak boleh kosong';
-                                    } else if (!_isValidEmail(value)) {
-                                      return 'Format email salah';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 20),
-
-                                _buildGlassTextField(
-                                  controller: _passwordController,
-                                  hint: "Password",
-                                  icon: Icons.lock_outline,
-                                  isPassword: _isObscured,
-                                  suffixIcon: IconButton(
-                                    icon: Icon(
-                                      _isObscured
-                                          ? Icons.visibility_off
-                                          : Icons.visibility,
-                                      color: Colors.white38,
-                                    ),
-                                    onPressed: () => setState(
-                                      () => _isObscured = !_isObscured,
-                                    ),
-                                  ),
-                                  validator: (value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'Password wajib diisi';
-                                    } else if (value.length < 6) {
-                                      return 'Password minimal 6 karakter';
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                const SizedBox(height: 40),
-
-                                if (state is AuthLoading)
-                                  Center(
-                                    child: Lottie.asset(
-                                      'assets/loading.json',
-                                      width: 100,
-                                      height: 100,
-                                    ),
-                                  )
-                                else
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          context.read<AuthBloc>().add(
-                                            LoginRequested(
-                                              _emailController.text,
-                                              _passwordController.text,
-                                            ),
-                                          );
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.purple.shade700,
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 15,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: 
-                                            BorderRadius.circular(30),
-                                        ),
-                                        elevation: 5,
-                                      ),
-                                      child: const Text(
-                                        "Login",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    "Belum punya akun?",
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const RegisterPage(),
-                                        ),
-                                      );
-                                    },
-                                    child: const Text(
-                                      "Daftar",
+                              ),
+                              child: Form(
+                                key: _formKey,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      "Masuk ke Akun Anda",
                                       style: TextStyle(
-                                        color: Colors.redAccent,
+                                        color: Colors.white,
+                                        fontSize: 18,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                  )
-                                ],
+                                    const SizedBox(height: 24),
+
+                                    _buildGlassTextField(
+                                      controller: _emailController,
+                                      hint: "Email",
+                                      icon: Icons.email_outlined,
+                                      keyboardType: TextInputType.emailAddress,
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Email tidak boleh kosong';
+                                        } else if (!_isValidEmail(value)) {
+                                          return 'Format email salah';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(height: 20),
+
+                                    _buildGlassTextField(
+                                      controller: _passwordController,
+                                      hint: "Password",
+                                      icon: Icons.lock_outline,
+                                      isPassword: _isObscured,
+                                      suffixIcon: IconButton(
+                                        icon: Icon(
+                                          _isObscured
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                          color: Colors.white38,
+                                        ),
+                                        onPressed: () => setState(
+                                          () => _isObscured = !_isObscured,
+                                        ),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value.isEmpty) {
+                                          return 'Password wajib diisi';
+                                        } else if (value.length < 6) {
+                                          return 'Password minimal 6 karakter';
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                    const SizedBox(height: 40),
+
+                                    if (state is AuthLoading)
+                                      Center(
+                                        child: Lottie.asset(
+                                          'assets/loading.json',
+                                          width: 100,
+                                          height: 100,
+                                        ),
+                                      )
+                                    else
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            if (_formKey.currentState!.validate()) {
+                                              context.read<AuthBloc>().add(
+                                                LoginRequested(
+                                                  _emailController.text,
+                                                  _passwordController.text,
+                                                ),
+                                              );
+                                            }
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: const Color(0xFF8D6E63),
+                                            padding: const EdgeInsets.symmetric(
+                                              vertical: 14,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(12),
+                                            ),
+                                            elevation: 4,
+                                          ),
+                                          child: const Text(
+                                            "Masuk",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    const SizedBox(height: 20),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          "Belum punya akun? ",
+                                          style: TextStyle(
+                                            color: Colors.white.withOpacity(0.8),
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => const RegisterPage(),
+                                              ),
+                                            );
+                                          },
+                                          child: const Text(
+                                            "Daftar di sini",
+                                            style: TextStyle(
+                                              color: Color(0xFFFFA726),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                              ],
                             ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                   ),
-                )
+                ),
               ],
-            ),
+            ), 
           );
         },
       ),
@@ -273,7 +329,7 @@ Widget _buildGlassTextField({
         contentPadding: const EdgeInsets.symmetric(
           vertical: 15,
           horizontal: 20,
-        )
+        ),
       ),
     ),
   );
