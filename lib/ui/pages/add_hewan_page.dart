@@ -70,6 +70,15 @@ class _AddHewanPageState extends State<AddHewanPage> {
           elevation: 0,
           iconTheme: const IconThemeData(color: Colors.white),
         ),
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Color(0xFF1A237E), Color(0xFFAD1457)],
+            ),
+          ),
+        ),
       ),
     );
   }
