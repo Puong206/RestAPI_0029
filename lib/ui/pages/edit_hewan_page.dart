@@ -15,4 +15,17 @@ class _EditHewanPageState extends State<EditHewanPage> {
   late final TextEditingController _tanggalController;
   late final TextEditingController _hargaController;
   late final TextEditingController _statusController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Isi field dengan data hewan yang sudah ada
+    _namaController = TextEditingController(text: widget.hewan.nama);
+    _jenisController = TextEditingController(text: widget.hewan.jenis);
+    _tanggalController = TextEditingController(text: widget.hewan.tanggalLahir);
+    _hargaController = TextEditingController(
+      text: widget.hewan.harga.toString(),
+    );
+    _statusController = TextEditingController(text: widget.hewan.status);
+  }
 }
