@@ -95,6 +95,16 @@ class _AddHewanPageState extends State<AddHewanPage> {
                     const SizedBox(height: 12),
                     _buildField(_statusController, 'Status', Icons.info_outline),
                     const SizedBox(height: 24),
+                    BlocBuilder<HewanBloc, HewanState>(
+                      builder: (context, state) {
+                        if (state is HewanLoading) {
+                          return const CircularProgressIndicator(color: Colors.white,);
+                        }
+                        return SizedBox(
+                          
+                        );
+                      },
+                    )
                   ],
                 ),
               ),
