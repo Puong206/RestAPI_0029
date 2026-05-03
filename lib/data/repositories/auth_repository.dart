@@ -1,23 +1,23 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:restapi_0029/data/models/user_model.dart';
+import 'package:restapi_0029/data/providers/storage_provider.dart';
 
 class AuthRepository {
   final String baseUrl = "https://ternak-be-production.up.railway.app/api/v1";
-  final _storage = const FlutterSecureStorage();
+  final StorageProvider _storage = StorageProvider();
 
   Future<void> persistToken(String token) async {
-    await _storage.write(key: 'jwt_token', value: token);
+    await _storage.saveToken(token);
   }
 
   Future<String?> getToken() async {
-    return await _storage.read(key: 'jwt_token');
+    return await _storage.getToken();
   }
 
   Future<void> deleteToken() async {
-    await _storage.delete(key: 'jwt_token');
+    await _storage.deleteToken();
   }
 
   Future<UserModel> login(String email, String password) async {
