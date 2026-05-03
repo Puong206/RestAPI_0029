@@ -84,7 +84,18 @@ class _AddHewanPageState extends State<AddHewanPage> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  
+                  children: [
+                    _buildField(_namaController, 'Nama', Icons.pets),
+                    const SizedBox(height: 12),
+                    _buildField(_jenisController, 'Jenis', Icons.category),
+                    const SizedBox(height: 12),
+                    _buildField(_tanggalLahirController, 'Tanggal Lahir (DD-MM-YYYY)', Icons.calendar_today),
+                    const SizedBox(height: 12),
+                    _buildField(_hargaController, 'Harga', Icons.attach_money),
+                    const SizedBox(height: 12),
+                    _buildField(_statusController, 'Status', Icons.info_outline),
+                    const SizedBox(height: 24),
+                  ],
                 ),
               ),
             )
