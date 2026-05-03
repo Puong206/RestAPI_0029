@@ -7,3 +7,7 @@ class EditHewanPage extends StatefulWidget {
   @override
   State<EditHewanPage> createState() => _EditHewanPageState();
 }
+
+class _EditHewanPageState extends State<EditHewanPage> {
+  
+}
