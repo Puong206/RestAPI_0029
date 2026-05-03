@@ -39,10 +39,10 @@ class _RegisterPageState extends State<RegisterPage> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: const Text(
-          "Daftar Akun Baru",
-          style: TextStyle(color: Colors.white),
+          "Buat Akun Baru",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Color(0xFF2E7D32),
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
@@ -72,23 +72,23 @@ class _RegisterPageState extends State<RegisterPage> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF1A237E), Color(0xFFAD1457)],
+              colors: [Color(0xFF2E7D32), Color(0xFF558B2F)],
             ),
           ),
           child: Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
+              padding: const EdgeInsets.all(20),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                   child: Container(
-                    padding: const EdgeInsets.all(30),
+                    padding: const EdgeInsets.all(28),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(25),
+                      color: Colors.white.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withOpacity(0.25),
                         width: 1.5,
                       ),
                     ),
@@ -98,14 +98,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text(
-                            "Buat Akun",
+                            "Daftar Sekarang",
                             style: TextStyle(
-                              fontSize: 24,
+                              fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
                             ),
                           ),
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 24),
 
                           _buildGlassTextField(
                             controller: _nameController,
@@ -138,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                           _buildGlassTextField(
                             controller: _passwordController,
-                            hint: "Password",
+                            hint: "Password (minimal 6 karakter)",
                             icon: Icons.lock_outline,
                             isPassword: _obsecureText,
                             suffixIcon: IconButton(
@@ -159,7 +159,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               return null;
                             },
                           ),
-                          const SizedBox(height: 30),
+                          const SizedBox(height: 28),
 
                           BlocBuilder<AuthBloc, AuthState>(
                             builder: (context, state) {
@@ -183,16 +183,17 @@ class _RegisterPageState extends State<RegisterPage> {
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.redAccent.shade400,
+                                    backgroundColor: const Color(0xFF8D6E63),
                                     padding: const EdgeInsets.symmetric(
-                                      vertical: 15,
+                                      vertical: 14,
                                     ),
                                     shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
+                                    elevation: 4,
                                   ),
                                   child: const Text(
-                                    "Daftar Sekarang",
+                                    "Daftar",
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
