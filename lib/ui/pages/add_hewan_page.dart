@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restapi_0029/logic/bloc/hewan/hewan_bloc.dart';
 import 'package:restapi_0029/logic/bloc/hewan/hewan_event.dart';
+import 'package:restapi_0029/logic/bloc/hewan/hewan_state.dart';
 
 class AddHewanPage extends StatefulWidget {
   const AddHewanPage({super.key});
@@ -39,5 +40,23 @@ class _AddHewanPageState extends State<AddHewanPage> {
       };
       context.read<HewanBloc>().add(CreateHewan(data));
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<HewanBloc, HewanState>(
+      listener: (context, state) {
+        if (state is HewanCreatedSuccess) {
+          Navigator.pop(context);
+        } else if (state is HewanError) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      },
+      
+    );
   }
 }
