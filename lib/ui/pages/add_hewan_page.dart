@@ -17,7 +17,9 @@ class _AddHewanPageState extends State<AddHewanPage> {
   final _jenisController = TextEditingController();
   final _tanggalLahirController = TextEditingController();
   final _hargaController = TextEditingController();
-  final _statusController = TextEditingController();
+  
+  String _statusSelected = 'tersedia';
+  final List<String> statusOptions = ['tersedia'];
 
   @override
   void dispose() {
@@ -25,7 +27,6 @@ class _AddHewanPageState extends State<AddHewanPage> {
     _jenisController.dispose();
     _tanggalLahirController.dispose();
     _hargaController.dispose();
-    _statusController.dispose();
     super.dispose();
   }
 
@@ -36,7 +37,7 @@ class _AddHewanPageState extends State<AddHewanPage> {
         'jenis': _jenisController.text.trim(),
         'tanggal_lahir': _tanggalLahirController.text.trim(),
         'harga': int.tryParse(_hargaController.text.trim()) ?? 0,
-        'status': _statusController.text.trim()
+        'status': _statusSelected
       };
       context.read<HewanBloc>().add(CreateHewan(data));
     }
@@ -60,14 +61,14 @@ class _AddHewanPageState extends State<AddHewanPage> {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           title: const Text(
-            "Tambah Hewan",
+            "🐾 Tambah Hewan Baru",
             style: TextStyle(
               fontWeight: FontWeight.bold, 
               color: Colors.white
             ),
           ),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
+          backgroundColor: Color(0xFF2E7D32),
+          elevation: 2,
           iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: Container(
@@ -75,7 +76,7 @@ class _AddHewanPageState extends State<AddHewanPage> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF1A237E), Color(0xFFAD1457)],
+              colors: [Color(0xFF2E7D32), Color(0xFF558B2F)],
             ),
           ),
           child: SafeArea(
@@ -89,11 +90,11 @@ class _AddHewanPageState extends State<AddHewanPage> {
                     const SizedBox(height: 12),
                     _buildField(_jenisController, 'Jenis', Icons.category),
                     const SizedBox(height: 12),
-                    _buildField(_tanggalLahirController, 'Tanggal Lahir (DD-MM-YYYY)', Icons.calendar_today),
+                    _buildField(_tanggalLahirController, 'Tanggal Lahir (YYYY-MM-DD)', Icons.calendar_today),
                     const SizedBox(height: 12),
-                    _buildField(_hargaController, 'Harga', Icons.attach_money),
+                    _buildField(_hargaController, 'Harga', Icons.attach_money, isNumber: true),
                     const SizedBox(height: 12),
-                    _buildField(_statusController, 'Status', Icons.info_outline),
+                    _buildStatusDropdown(),
                     const SizedBox(height: 24),
                     BlocBuilder<HewanBloc, HewanState>(
                       builder: (context, state) {
@@ -105,15 +106,16 @@ class _AddHewanPageState extends State<AddHewanPage> {
                           child: ElevatedButton(
                             onPressed: _submitForm,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              foregroundColor: Colors.deepPurple,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: Color(0xFF8D6E63),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(12),
                               ),
+                              elevation: 4,
                             ),
                             child: const Text(
-                              "Simpan",
+                              "Simpan Hewan",
                               style: TextStyle(
                                 fontSize: 16, 
                                 fontWeight: FontWeight.bold
@@ -146,7 +148,7 @@ class _AddHewanPageState extends State<AddHewanPage> {
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70),
+        labelStyle: TextStyle(color: Colors.white.withOpacity(0.8)),
         prefixIcon: Icon(icon, color: Colors.white70),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -172,6 +174,45 @@ class _AddHewanPageState extends State<AddHewanPage> {
         }
         return null;
       },
+    );
+  }
+
+  Widget _buildStatusDropdown() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        border: Border.all(color: Color(0xFF8D6E63).withOpacity(0.5), width: 1.5),
+        borderRadius: BorderRadius.circular(12),
+        color: Colors.white.withOpacity(0.08),
+      ),
+      child: DropdownButton<String>(
+        isExpanded: true,
+        value: _statusSelected,
+        dropdownColor: Color(0xFF2E7D32),
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        underline: Container(),
+        icon: const Icon(Icons.expand_more, color: Colors.white70),
+        items: statusOptions.map((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Color(0xFF4CAF50).withOpacity(0.4),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(value),
+            ),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          if (newValue != null) {
+            setState(() {
+              _statusSelected = newValue;
+            });
+          }
+        },
+      ),
     );
   }
 }
