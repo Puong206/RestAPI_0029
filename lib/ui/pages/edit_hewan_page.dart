@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:restapi_0029/logic/bloc/hewan/hewan_bloc.dart';
+import 'package:restapi_0029/logic/bloc/hewan/hewan_event.dart';
 
 class EditHewanPage extends StatefulWidget {
   final HewanModel hewan;
