@@ -85,7 +85,17 @@ class _EditHewanPageState extends State<EditHewanPage> {
               colors: [Color(0xFF1A237E), Color(0xFFAD1457)],
             ),
           ),
-          
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  
+                )
+              ),
+            ),
+          ), 
         ),
       ),
     );
