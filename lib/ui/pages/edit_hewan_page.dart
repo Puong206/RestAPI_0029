@@ -61,10 +61,23 @@ class _EditHewanPageState extends State<EditHewanPage> {
     return BlocListener<HewanBloc, HewanState>(
       listener: (context, state) {
         if (state is HewanCreatedSuccess) {
-          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Hewan berhasil diperbarui! ✨'),
+              backgroundColor: Colors.green,
+              duration: Duration(seconds: 2),
+            ),
+          );
+          Future.delayed(const Duration(milliseconds: 500), () {
+            Navigator.pop(context);
+          });
         } else if (state is HewanError) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+            SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.redAccent,
+              duration: const Duration(seconds: 3),
+            ),
           );
         }
       },
@@ -72,12 +85,13 @@ class _EditHewanPageState extends State<EditHewanPage> {
         extendBodyBehindAppBar: true,
         appBar: AppBar(
           title: const Text(
-            '✏️ Edit Data Hewan',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            '✏️ Edit Hewan',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
           ),
-          backgroundColor: Color(0xFF2E7D32),
-          elevation: 2,
+          backgroundColor: const Color(0xFF2E7D32),
+          elevation: 0,
           iconTheme: const IconThemeData(color: Colors.white),
+          centerTitle: true,
         ),
         body: Container(
           decoration: const BoxDecoration(
@@ -89,148 +103,317 @@ class _EditHewanPageState extends State<EditHewanPage> {
           ),
           child: SafeArea(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20.0),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    _buildField(_namaController, 'Nama', Icons.pets),
-                    const SizedBox(height: 12),
-                    _buildField(_jenisController, 'Jenis', Icons.category),
-                    const SizedBox(height: 12),
-                    _buildField(
-                      _tanggalController,
-                      'Tanggal Lahir (YYYY-MM-DD)',
-                      Icons.calendar_today,
+                    // Header Card
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.2),
+                          width: 1.5,
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF8D6E63).withOpacity(0.3),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.3),
+                                width: 2,
+                              ),
+                            ),
+                            child: const Text(
+                              '🐄',
+                              style: TextStyle(fontSize: 32),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'Perbarui Data Hewan',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Ubah informasi hewan ternak Anda',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.7),
+                              fontSize: 12,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(height: 12),
-                    _buildField(
-                      _hargaController,
-                      'Harga',
-                      Icons.attach_money,
+                    const SizedBox(height: 28),
+
+                    // Form Fields
+                    _buildInputField(
+                      controller: _namaController,
+                      label: 'Nama Hewan',
+                      hint: 'Ubah nama hewan',
+                      icon: Icons.pets,
+                    ),
+                    const SizedBox(height: 16),
+
+                    _buildInputField(
+                      controller: _jenisController,
+                      label: 'Jenis Hewan',
+                      hint: 'Ubah jenis hewan',
+                      icon: Icons.category,
+                    ),
+                    const SizedBox(height: 16),
+
+                    _buildInputField(
+                      controller: _tanggalController,
+                      label: 'Tanggal Lahir',
+                      hint: 'YYYY-MM-DD',
+                      icon: Icons.calendar_today,
+                    ),
+                    const SizedBox(height: 16),
+
+                    _buildInputField(
+                      controller: _hargaController,
+                      label: 'Harga (Rp)',
+                      hint: 'Ubah harga',
+                      icon: Icons.attach_money,
                       isNumber: true,
                     ),
-                    const SizedBox(height: 12),
-                    _buildStatusDropdown(),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 16),
+
+                    _buildStatusField(),
+                    const SizedBox(height: 32),
+
+                    // Submit Button
                     BlocBuilder<HewanBloc, HewanState>(
                       builder: (context, state) {
-                        if (state is HewanLoading) {
-                          return const CircularProgressIndicator(
-                            color: Colors.white,
-                          );
-                        }
+                        bool isLoading = state is HewanLoading;
+
                         return SizedBox(
                           width: double.infinity,
+                          height: 56,
                           child: ElevatedButton(
-                            onPressed: _submit,
+                            onPressed: isLoading ? null : _submit,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Color(0xFF8D6E63),
+                              backgroundColor: const Color(0xFF8D6E63),
                               foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              disabledBackgroundColor:
+                                  const Color(0xFF8D6E63).withOpacity(0.6),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(14),
                               ),
                               elevation: 4,
                             ),
-                            child: const Text(
-                              'Simpan Perubahan',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                            child: isLoading
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                      strokeWidth: 2.5,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Simpan Perubahan',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
                           ),
                         );
-                      }
+                      },
                     ),
+                    const SizedBox(height: 12),
                   ],
-                )
+                ),
               ),
             ),
-          ), 
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildField(
-    TextEditingController controller,
-    String label,
-    IconData icon, {
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData icon,
     bool isNumber = false,
   }) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70),
-        prefixIcon: Icon(icon, color: Colors.white70),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.3)),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.95),
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.3,
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.white),
+        const SizedBox(height: 8),
+        TextFormField(
+          controller: controller,
+          keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
+          ),
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(
+              color: Colors.white.withOpacity(0.35),
+              fontSize: 14,
+            ),
+            prefixIcon: Icon(
+              icon,
+              color: Colors.white.withOpacity(0.6),
+              size: 20,
+            ),
+            prefixIconConstraints: const BoxConstraints(minWidth: 48),
+            filled: true,
+            fillColor: Colors.white.withOpacity(0.08),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 16,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Colors.white.withOpacity(0.15),
+                width: 1.2,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide(
+                color: Colors.white.withOpacity(0.15),
+                width: 1.2,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(
+                color: Color(0xFF8D6E63),
+                width: 2,
+              ),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(
+                color: Color(0xFFFF6B6B),
+                width: 1.5,
+              ),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(
+                color: Color(0xFFFF6B6B),
+                width: 2,
+              ),
+            ),
+            errorStyle: const TextStyle(
+              color: Color(0xFFFF6B6B),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          validator: (value) {
+            if (value == null || value.trim().isEmpty) {
+              return '$label tidak boleh kosong';
+            }
+            if (isNumber) {
+              if (int.tryParse(value.trim()) == null) {
+                return '$label harus berupa angka';
+              }
+            }
+            return null;
+          },
         ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.redAccent),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.redAccent),
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.trim().isEmpty) return '$label wajib diisi';
-        if (isNumber && int.tryParse(value.trim()) == null) {
-          return '$label harus berupa angka';
-        }
-        return null;
-      },
+      ],
     );
   }
 
-  Widget _buildStatusDropdown() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Color(0xFF8D6E63).withOpacity(0.5), width: 1.5),
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white.withOpacity(0.08),
-      ),
-      child: DropdownButton<String>(
-        isExpanded: true,
-        value: _statusSelected,
-        dropdownColor: Color(0xFF2E7D32),
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-        underline: Container(),
-        icon: const Icon(Icons.expand_more, color: Colors.white70),
-        items: statusOptions.map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Color(0xFF4CAF50).withOpacity(0.4),
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(value),
+  Widget _buildStatusField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Status',
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.95),
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            letterSpacing: 0.3,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.white.withOpacity(0.15),
+              width: 1.2,
             ),
-          );
-        }).toList(),
-        onChanged: (String? newValue) {
-          if (newValue != null) {
-            setState(() {
-              _statusSelected = newValue;
-            });
-          }
-        },
-      ),
+            borderRadius: BorderRadius.circular(12),
+            color: Colors.white.withOpacity(0.08),
+          ),
+          child: DropdownButton<String>(
+            isExpanded: true,
+            value: _statusSelected,
+            dropdownColor: const Color(0xFF2E7D32),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 15,
+            ),
+            underline: Container(),
+            icon: Icon(
+              Icons.expand_more,
+              color: Colors.white.withOpacity(0.6),
+              size: 24,
+            ),
+            items: statusOptions.map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(
+                  value,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              if (newValue != null) {
+                setState(() {
+                  _statusSelected = newValue;
+                });
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 }
