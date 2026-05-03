@@ -91,7 +91,27 @@ class _EditHewanPageState extends State<EditHewanPage> {
               child: Form(
                 key: _formKey,
                 child: Column(
-                  
+                  children: [
+                    _buildField(_namaController, 'Nama', Icons.pets),
+                    const SizedBox(height: 12),
+                    _buildField(_jenisController, 'Jenis', Icons.category),
+                    const SizedBox(height: 12),
+                    _buildField(
+                      _tanggalController,
+                      'Tanggal Lahir (YYYY-MM-DD)',
+                      Icons.calendar_today,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildField(
+                      _hargaController,
+                      'Harga',
+                      Icons.attach_money,
+                      isNumber: true,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildField(_statusController, 'Status', Icons.info_outline),
+                    const SizedBox(height: 24),
+                  ],
                 )
               ),
             ),
