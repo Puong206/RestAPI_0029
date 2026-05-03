@@ -8,6 +8,8 @@ import 'package:restapi_0029/logic/bloc/auth/auth_event.dart';
 import 'package:restapi_0029/logic/bloc/hewan/hewan_bloc.dart';
 import 'package:restapi_0029/logic/bloc/hewan/hewan_event.dart';
 import 'package:restapi_0029/logic/bloc/hewan/hewan_state.dart';
+import 'package:restapi_0029/ui/pages/add_hewan_page.dart';
+import 'package:restapi_0029/ui/pages/edit_hewan_page.dart';
 import '../../data/repositories/hewan_repository.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -125,7 +127,7 @@ class DashboardPage extends StatelessWidget {
                         .read<
                             HewanBloc
                         >(),
-                    //child: const AddHewanPage(),
+                    child: const AddHewanPage(),
                   ),
                 ),
               );
@@ -160,7 +162,7 @@ class DashboardPage extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (innerContext) => BlocProvider.value(
                       value: bloc,
-                      //child: EditHewanPage(hewan: hewan),
+                      child: EditHewanPage(hewan: hewan),
                     ),
                   ),
                 );
