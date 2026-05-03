@@ -132,4 +132,14 @@ class _AddHewanPageState extends State<AddHewanPage> {
       ),
     );
   }
+
+  Widget _buildField(
+    TextEditingController controller,
+    String label,
+    IconData icon, {
+      bool isNumber = false,
+    }
+  ) {
+    
+  }
 }
